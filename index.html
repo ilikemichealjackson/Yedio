@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YEDIO - Live Kanye Radio</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="yedio-logo.png" alt="YEDIO Logo" class="logo">
+            <h1>YEDIO</h1>
+        </header>
+        <main>
+            <div id="nowPlaying">
+                <h2>Now Playing</h2>
+                <p id="songTitle">Tuning in...</p>
+            </div>
+            <div id="controls">
+                <button id="playButton">Play</button>
+                <div id="volumeControl">
+                    <label for="volume">Volume:</label>
+                    <input type="range" id="volume" min="0" max="1" step="0.1" value="1">
+                </div>
+            </div>
+            <div id="eventInfo">
+                <h3>Upcoming Events</h3>
+                <p>5-6 PM PST: Unreleased Tracks</p>
+                <p>10-11 PM PST: Night Vibes</p>
+            </div>
+        </main>
+        <footer>
+            <p>&copy; 2023 YEDIO. All rights reserved.</p>
+        </footer>
+    </div>
+    <audio id="audioPlayer"></audio>
+    <script src="script.js"></script>
+</body>
+</html>
+
