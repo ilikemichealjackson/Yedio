@@ -1,29 +1,51 @@
-document.addEventListener('DOMContentLoaded', function() {\
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM Content Loaded');
 
-const audioPlayer = document.getElementById('audioPlayer');
-const playButton = document.getElementById('playButton');
-const songTitle = document.getElementById('songTitle');
-const volumeControl = document.getElementById('volume');
+    const audioPlayer = document.getElementById('audioPlayer');
+    const playButton = document.getElementById('playButton');
+    const songTitle = document.getElementById('songTitle');
+    const volumeControl = document.getElementById('volume');
 
-// Add error handling for audio
+    // Define songs and state variables first
+    const regularSongs = [
+        '30 Hours.mp3',
+        'Believe What I Say.mp3',
+        'I Thought About Killing You.mp3',
+        'So Soon.mp3'
+    ];
+
+    const unreleasedSongs = [];
+    const nightVibeSongs = [...regularSongs];
+
+    let currentSongs = regularSongs;
+    let currentSongIndex = -1;
+    let isPlaying = false;
+
+    // Debug logging for audio element
+    console.log('Audio element found:', audioPlayer !== null);
+
+    // Add comprehensive error handling for audio
     audioPlayer.addEventListener('error', function(e) {
-        console.error('Error loading audio:', e);
-        console.log('Audio source:', audioPlayer.src);
+        console.error('Audio Error:', e);
+        console.error('Error code:', e.target.error.code);
+        console.error('Audio source:', audioPlayer.src);
         songTitle.textContent = 'Error loading audio';
     });
 
-    // Add loading state
     audioPlayer.addEventListener('loadstart', function() {
+        console.log('Audio loading started');
         songTitle.textContent = 'Loading...';
     });
 
-    // Add ready state
     audioPlayer.addEventListener('canplay', function() {
-        songTitle.textContent = currentSongs[currentSongIndex].replace('.mp3', '');
+        console.log('Audio can play');
+        if (currentSongIndex !== -1) {
+            songTitle.textContent = currentSongs[currentSongIndex].replace('.mp3', '');
+        }
     });
 
-    // Modify playRandomSong function
     function playRandomSong() {
+        console.log('Attempting to play random song');
         let newIndex;
         do {
             newIndex = Math.floor(Math.random() * currentSongs.length);
@@ -31,37 +53,39 @@ const volumeControl = document.getElementById('volume');
         
         currentSongIndex = newIndex;
         const song = currentSongs[currentSongIndex];
+        console.log('Selected song:', song);
         
-        // Add error handling for file path
         try {
-            const audioPath = `./songs/${song}`;
+            // Use absolute path from root
+            const audioPath = `/songs/${song}`;
+            console.log('Audio path:', audioPath);
             audioPlayer.src = audioPath;
             
-            // Create a promise to handle autoplay
             const playPromise = audioPlayer.play();
             
             if (playPromise !== undefined) {
                 playPromise
                     .then(() => {
+                        console.log('Playback started successfully');
                         isPlaying = true;
                         playButton.textContent = 'Pause';
                         songTitle.textContent = song.replace('.mp3', '');
                     })
                     .catch(error => {
-                        console.error('Autoplay prevented:', error);
+                        console.error('Playback failed:', error);
                         isPlaying = false;
                         playButton.textContent = 'Play';
                         songTitle.textContent = 'Click Play to Start';
                     });
             }
         } catch (error) {
-            console.error('Error setting audio source:', error);
+            console.error('Error in playRandomSong:', error);
             songTitle.textContent = 'Error loading audio';
         }
     }
 
-    // Modify togglePlayPause function
     function togglePlayPause() {
+        console.log('Toggle play/pause');
         if (isPlaying) {
             audioPlayer.pause();
             isPlaying = false;
@@ -74,11 +98,12 @@ const volumeControl = document.getElementById('volume');
                 if (playPromise !== undefined) {
                     playPromise
                         .then(() => {
+                            console.log('Playback resumed successfully');
                             isPlaying = true;
                             playButton.textContent = 'Pause';
                         })
                         .catch(error => {
-                            console.error('Playback prevented:', error);
+                            console.error('Resume playback failed:', error);
                             isPlaying = false;
                             playButton.textContent = 'Play';
                         });
@@ -87,114 +112,53 @@ const volumeControl = document.getElementById('volume');
         }
     }
 
-const regularSongs = [
-    '30 Hours.mp3',
-    'Believe What I Say.mp3',
-    'I Thought About Killing You.mp3',
-    'So Soon.mp3',
-    // Add more regular song filenames here
-];
-
-const unreleasedSongs = [
-    // Add unreleased song filenames here
-];
-
-const nightVibeSongs = [
-    '30 Hours.mp3',
-    'Believe What I Say.mp3',
-    'I Thought About Killing You.mp3',
-    'So Soon.mp3',
-    // Add more night vibe song filenames here
-];
-
-let currentSongs = regularSongs;
-let currentSongIndex = -1;
-let isPlaying = false;
-
-function playRandomSong() {
-    let newIndex;
-    do {
-        newIndex = Math.floor(Math.random() * currentSongs.length);
-    } while (newIndex === currentSongIndex && currentSongs.length > 1);
-    
-    currentSongIndex = newIndex;
-    const song = currentSongs[currentSongIndex];
-    
-    audioPlayer.src = `songs/${song}`;
-    audioPlayer.play();
-    isPlaying = true;
-    playButton.textContent = 'Pause';
-    
-    // Update song title (remove file extension)
-    songTitle.textContent = song.replace('.mp3', '');
-}
-
-function togglePlayPause() {
-    if (isPlaying) {
-        audioPlayer.pause();
-        isPlaying = false;
-        playButton.textContent = 'Play';
-    } else {
-        if (currentSongIndex === -1) {
-            playRandomSong();
-        } else {
-            audioPlayer.play();
-            isPlaying = true;
-            playButton.textContent = 'Pause';
+    function checkSpecialEvents() {
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        const pstHours = (hours - 8 + 24) % 24;
+        
+        console.log('Checking special events, PST Hour:', pstHours);
+        
+        if (pstHours === 17 && minutes === 0) {
+            console.log("Starting unreleased songs event");
+            currentSongs = unreleasedSongs;
+            playEventAnnouncement('unreleased_event.mp3');
+        } else if (pstHours === 22 && minutes === 0) {
+            console.log("Starting night time vibe songs event");
+            currentSongs = nightVibeSongs;
+            playEventAnnouncement('night_vibe_event.mp3');
+        } else if ((pstHours === 18 && minutes === 0) || (pstHours === 23 && minutes === 0)) {
+            console.log("Returning to regular programming");
+            currentSongs = regularSongs;
+            playEventAnnouncement('regular_programming.mp3');
         }
     }
-}
 
-playButton.addEventListener('click', togglePlayPause);
-audioPlayer.addEventListener('ended', playRandomSong);
-
-volumeControl.addEventListener('input', (e) => {
-    audioPlayer.volume = e.target.value;
-});
-
-function checkSpecialEvents() {
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    
-    // Convert to PST (assuming the server is in UTC)
-    const pstHours = (hours - 8 + 24) % 24;
-    
-    if (pstHours === 17 && minutes === 0) {
-        // 5-6 PM PST: Unreleased songs event
-        console.log("Starting unreleased songs event");
-        currentSongs = unreleasedSongs;
-        playEventAnnouncement('unreleased_event.mp3');
-    } else if (pstHours === 22 && minutes === 0) {
-        // 10-11 PM PST: Night time vibe songs event
-        console.log("Starting night time vibe songs event");
-        currentSongs = nightVibeSongs;
-        playEventAnnouncement('night_vibe_event.mp3');
-    } else if ((pstHours === 18 && minutes === 0) || (pstHours === 23 && minutes === 0)) {
-        // Return to regular songs after events
-        console.log("Returning to regular programming");
-        currentSongs = regularSongs;
-        playEventAnnouncement('regular_programming.mp3');
+    function playEventAnnouncement(announcementFile) {
+        audioPlayer.src = `/announcements/${announcementFile}`;
+        audioPlayer.play();
+        isPlaying = true;
+        playButton.textContent = 'Pause';
+        songTitle.textContent = 'Event Announcement';
+        
+        audioPlayer.onended = () => {
+            playRandomSong();
+            audioPlayer.onended = null;
+        };
     }
-}
 
-function playEventAnnouncement(announcementFile) {
-    audioPlayer.src = `announcements/${announcementFile}`;
-    audioPlayer.play();
-    isPlaying = true;
-    playButton.textContent = 'Pause';
-    songTitle.textContent = 'Event Announcement';
-    
-    audioPlayer.onended = () => {
-        playRandomSong();
-        audioPlayer.onended = null;  // Reset the onended handler
-    };
-}
+    // Add event listeners
+    playButton.addEventListener('click', togglePlayPause);
+    audioPlayer.addEventListener('ended', playRandomSong);
+    volumeControl.addEventListener('input', (e) => {
+        audioPlayer.volume = e.target.value;
+    });
 
-// Check for special events every minute
-setInterval(checkSpecialEvents, 60000);
+    // Check for special events every minute
+    setInterval(checkSpecialEvents, 60000);
 
-// Initial play to start the radio
-playRandomSong();
-
+    // Don't auto-play, wait for user interaction
+    songTitle.textContent = 'Click Play to Start';
+    console.log('Setup complete');
 });
