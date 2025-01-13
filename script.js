@@ -9,7 +9,25 @@ document.addEventListener('DOMContentLoaded', function() {
         { name: '30 Hours.mp3', duration: 323 },
         { name: 'Believe What I Say.mp3', duration: 242 },
         { name: 'I Thought About Killing You.mp3', duration: 274 },
-        { name: 'So Soon.mp3', duration: 147 }
+        { name: 'So Soon.mp3', duration: 147 },
+        // credit to awpcord for the files while yetracker was down
+        { name: 'Field Trip.mp3', duration: 192 },
+        { name: 'Gun To My Head.mp3', duration: 350 },
+        { name: 'God Level.mp3', duration: 250 },
+        { name: 'Mr Miyagi.mp3', duration: 148 },
+        { name: 'Dead.mp3', duration: 207 },
+        { name: 'Happy.mp3', duration: 286 },
+        { name: 'Pablo.mp3', duration: 334 },
+        { name: 'Fade.mp3', duration: 193 },
+        { name: 'Can U Be.mp3', duration: 366 },
+        // @themusicnerdguy on youtube for yedits below
+        { name: 'FUK SUM.mp3', duration: 162 },
+        { name: 'Fried.mp3', duration: 196 },
+        { name: 'Time Flies.mp3', duration: 238 },
+        { name: 'Unlock.mp3', duration: 215 },
+        { name: 'Dont.mp3', duration: 154 },
+        { name: 'Make It Feel Right.mp3', duration: 189 },
+        // songs below here are not by @themusicnerdguy
     ];
 
     const unreleasedSongs = [];
