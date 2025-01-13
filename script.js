@@ -20,12 +20,12 @@ document.addEventListener('DOMContentLoaded', function() {
         { name: 'Pablo.mp3', duration: 334, coverArt: 'covers/pablo.jpg' },
         { name: 'Fade.mp3', duration: 193, coverArt: 'covers/fade.jpg' },
         { name: 'Can U Be.mp3', duration: 366, coverArt: 'covers/can-u-be.jpg' },
-        { name: 'FUK SUM.mp3', duration: 162, coverArt: 'covers/fuk-sum.jpg' },
-        { name: 'Fried.mp3', duration: 196, coverArt: 'covers/fried.jpg' },
-        { name: 'Time Flies.mp3', duration: 238, coverArt: 'covers/time-flies.jpg' },
-        { name: 'Unlock.mp3', duration: 215, coverArt: 'covers/unlock.jpg' },
-        { name: 'Dont.mp3', duration: 154, coverArt: 'covers/dont.jpg' },
-        { name: 'Make It Feel Right.mp3', duration: 189, coverArt: 'covers/make-it-feel-right.jpg' },
+        { name: 'FUK SUM.mp3', duration: 162, coverArt: 'covers/yesuke.png' },
+        { name: 'Fried.mp3', duration: 196, coverArt: 'covers/yesuke.png' },
+        { name: 'Time Flies.mp3', duration: 238, coverArt: 'covers/yesuke.png' },
+        { name: 'Unlock.mp3', duration: 215, coverArt: 'covers/yesuke.png' },
+        { name: 'Dont.mp3', duration: 154, coverArt: 'covers/yesuke.png' },
+        { name: 'Make It Feel Right.mp3', duration: 189, coverArt: 'covers/yesuke.png' },
     ];
 
     const unreleasedSongs = [];
