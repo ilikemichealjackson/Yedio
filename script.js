@@ -4,30 +4,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const songTitle = document.getElementById('songTitle');
     const volumeControl = document.getElementById('volume');
     const clockElement = document.getElementById('clock');
+    const coverArtElement = document.getElementById('coverArt');
 
     const regularSongs = [
-        { name: '30 Hours.mp3', duration: 323 },
-        { name: 'Believe What I Say.mp3', duration: 242 },
-        { name: 'I Thought About Killing You.mp3', duration: 274 },
-        { name: 'So Soon.mp3', duration: 147 },
-        // credit to awpcord for the files while yetracker was down
-        { name: 'Field Trip.mp3', duration: 192 },
-        { name: 'Gun To My Head.mp3', duration: 350 },
-        { name: 'God Level.mp3', duration: 250 },
-        { name: 'Mr Miyagi.mp3', duration: 148 },
-        { name: 'Dead.mp3', duration: 207 },
-        { name: 'Happy.mp3', duration: 286 },
-        { name: 'Pablo.mp3', duration: 334 },
-        { name: 'Fade.mp3', duration: 193 },
-        { name: 'Can U Be.mp3', duration: 366 },
-        // @themusicnerdguy on youtube for yedits below
-        { name: 'FUK SUM.mp3', duration: 162 },
-        { name: 'Fried.mp3', duration: 196 },
-        { name: 'Time Flies.mp3', duration: 238 },
-        { name: 'Unlock.mp3', duration: 215 },
-        { name: 'Dont.mp3', duration: 154 },
-        { name: 'Make It Feel Right.mp3', duration: 189 },
-        // songs below here are not by @themusicnerdguy
+        { name: '30 Hours.mp3', duration: 323, coverArt: 'covers/30-hours.jpg' },
+        { name: 'Believe What I Say.mp3', duration: 242, coverArt: 'covers/believe-what-i-say.jpg' },
+        { name: 'I Thought About Killing You.mp3', duration: 274, coverArt: 'covers/i-thought-about-killing-you.jpg' },
+        { name: 'So Soon.mp3', duration: 147, coverArt: 'covers/so-soon.jpg' },
+        { name: 'Field Trip.mp3', duration: 192, coverArt: 'covers/field-trip.jpg' },
+        { name: 'Gun To My Head.mp3', duration: 350, coverArt: 'covers/gun-to-my-head.jpg' },
+        { name: 'God Level.mp3', duration: 250, coverArt: 'covers/god-level.jpg' },
+        { name: 'Mr Miyagi.mp3', duration: 148, coverArt: 'covers/mr-miyagi.jpg' },
+        { name: 'Dead.mp3', duration: 207, coverArt: 'covers/dead.jpg' },
+        { name: 'Happy.mp3', duration: 286, coverArt: 'covers/happy.jpg' },
+        { name: 'Pablo.mp3', duration: 334, coverArt: 'covers/pablo.jpg' },
+        { name: 'Fade.mp3', duration: 193, coverArt: 'covers/fade.jpg' },
+        { name: 'Can U Be.mp3', duration: 366, coverArt: 'covers/can-u-be.jpg' },
+        { name: 'FUK SUM.mp3', duration: 162, coverArt: 'covers/fuk-sum.jpg' },
+        { name: 'Fried.mp3', duration: 196, coverArt: 'covers/fried.jpg' },
+        { name: 'Time Flies.mp3', duration: 238, coverArt: 'covers/time-flies.jpg' },
+        { name: 'Unlock.mp3', duration: 215, coverArt: 'covers/unlock.jpg' },
+        { name: 'Dont.mp3', duration: 154, coverArt: 'covers/dont.jpg' },
+        { name: 'Make It Feel Right.mp3', duration: 189, coverArt: 'covers/make-it-feel-right.jpg' },
     ];
 
     const unreleasedSongs = [];
@@ -37,10 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentSongIndex = -1;
     let isPlaying = false;
 
-    // Sync-related variables
-    let syncInterval;
-
-    function getServerTimestamp() {
+    function getUniversalTimestamp() {
         return Math.floor(Date.now() / 1000);
     }
 
@@ -49,44 +44,48 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function syncPlayback() {
-        const timestamp = getServerTimestamp();
+        const timestamp = getUniversalTimestamp();
         const totalDuration = getTotalDuration(currentSongs);
         let currentTime = timestamp % totalDuration;
         
+        let newSongIndex = 0;
         for (let i = 0; i < currentSongs.length; i++) {
             if (currentTime < currentSongs[i].duration) {
-                currentSongIndex = i;
+                newSongIndex = i;
                 break;
             }
             currentTime -= currentSongs[i].duration;
         }
 
-        const song = currentSongs[currentSongIndex];
-        audioPlayer.src = `/songs/${song.name}`;
-        audioPlayer.currentTime = currentTime;
+        if (newSongIndex !== currentSongIndex || audioPlayer.paused) {
+            currentSongIndex = newSongIndex;
+            const song = currentSongs[currentSongIndex];
+            audioPlayer.src = `/songs/${song.name}`;
+            audioPlayer.currentTime = currentTime;
 
-        if (isPlaying) {
-            const playPromise = audioPlayer.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.error('Playback failed:', error);
-                    // Handle the error here, e.g., retry playback or show an error message
-                });
+            updateSongInfo(song);
+
+            if (isPlaying) {
+                const playPromise = audioPlayer.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.error('Playback failed:', error);
+                    });
+                }
             }
         }
+    }
 
+    function updateSongInfo(song) {
         songTitle.textContent = song.name.replace('.mp3', '');
-        console.log(`Synced to song: ${song.name}, offset: ${currentTime}`);
+        coverArtElement.src = song.coverArt;
+        console.log(`Now playing: ${song.name}, at ${audioPlayer.currentTime.toFixed(2)} seconds`);
     }
 
     function startSync() {
         syncPlayback();
-        // Sync every 30 seconds to account for potential drift
-        syncInterval = setInterval(syncPlayback, 30000);
-    }
-
-    function stopSync() {
-        clearInterval(syncInterval);
+        // Sync every second to keep accurate timing
+        setInterval(syncPlayback, 1000);
     }
 
     function togglePlayPause() {
@@ -94,11 +93,10 @@ document.addEventListener('DOMContentLoaded', function() {
             audioPlayer.pause();
             isPlaying = false;
             playButton.textContent = 'Play';
-            stopSync();
         } else {
             isPlaying = true;
             playButton.textContent = 'Pause';
-            startSync();
+            syncPlayback();
         }
     }
 
@@ -108,26 +106,17 @@ document.addEventListener('DOMContentLoaded', function() {
         audioPlayer.volume = e.target.value;
     });
 
-    audioPlayer.addEventListener('ended', () => {
-        currentSongIndex = (currentSongIndex + 1) % currentSongs.length;
-        if (isPlaying) {
-            audioPlayer.src = `/songs/${currentSongs[currentSongIndex].name}`;
-            audioPlayer.play().catch(error => {
-                console.error('Playback failed:', error);
-                // Handle the error here
-            });
-        }
-    });
-
     function checkSpecialEvents() {
         const now = new Date();
         const hours = now.getHours();
         const minutes = now.getMinutes();
+        
+        // Convert to PST (assuming the server is in UTC)
         const pstHours = (hours - 8 + 24) % 24;
         
         if (pstHours === 17 && minutes === 0) {
             console.log("Starting unreleased songs event");
-            currentSongs = unreleasedSongs;
+            currentSongs = unreleasedSongs.length > 0 ? unreleasedSongs : regularSongs;
             playEventAnnouncement('unreleased_event.mp3');
         } else if (pstHours === 22 && minutes === 0) {
             console.log("Starting night time vibe songs event");
@@ -144,20 +133,16 @@ document.addEventListener('DOMContentLoaded', function() {
         audioPlayer.src = `/announcements/${announcementFile}`;
         audioPlayer.play().catch(error => {
             console.error('Announcement playback failed:', error);
-            // Handle the error here
         });
         isPlaying = true;
         playButton.textContent = 'Pause';
         songTitle.textContent = 'Event Announcement';
         
         audioPlayer.onended = () => {
-            startSync();
+            syncPlayback();
             audioPlayer.onended = null;
         };
     }
-
-    // Check for special events every minute
-    setInterval(checkSpecialEvents, 60000);
 
     // Update clock
     function updateClock() {
@@ -166,9 +151,15 @@ document.addEventListener('DOMContentLoaded', function() {
         clockElement.textContent = timeString;
     }
 
+    // Check for special events every minute
+    setInterval(checkSpecialEvents, 60000);
+
     // Update clock every second
     setInterval(updateClock, 1000);
     updateClock(); // Initial update
+
+    // Start syncing playback
+    startSync();
 
     // Initialize
     songTitle.textContent = 'Click Play to Start';
@@ -179,3 +170,4 @@ document.addEventListener('DOMContentLoaded', function() {
         songTitle.textContent = 'Error loading audio';
     });
 });
+
