@@ -4,6 +4,34 @@ body {
     padding: 0;
     background-color: #f0f0f0;
     color: #333;
+    position: relative;
+    min-height: 100vh;
+}
+
+.spinning-logos {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.spinning-logo {
+    position: fixed;
+    width: 150px;
+    height: 150px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.spinning-logo.left {
+    left: 20px;
+}
+
+.spinning-logo.right {
+    right: 20px;
 }
 
 .container {
@@ -112,3 +140,8 @@ footer {
     font-size: 14px;
 }
 
+@media (max-width: 1200px) {
+    .spinning-logo {
+        display: none;
+    }
+}
