@@ -6,10 +6,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const clockElement = document.getElementById('clock');
 
     const regularSongs = [
-        { name: '30 Hours.mp3', duration: 305 },
+        { name: '30 Hours.mp3', duration: 323 },
         { name: 'Believe What I Say.mp3', duration: 242 },
         { name: 'I Thought About Killing You.mp3', duration: 274 },
-        { name: 'So Soon.mp3', duration: 180 }
+        { name: 'So Soon.mp3', duration: 147 }
     ];
 
     const unreleasedSongs = [];
