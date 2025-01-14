@@ -28,7 +28,13 @@ document.addEventListener('DOMContentLoaded', function() {
         { name: 'Make It Feel Right.mp3', duration: 189, coverArt: 'covers/yesuke.png' },
     ];
 
-    const unreleasedSongs = [];
+    const unreleasedSongs = [
+        { name: 'Mr Miyagi.mp3', duration: 148, coverArt: 'covers/donda 2.png' },
+        { name: 'Happy.mp3', duration: 286, coverArt: 'covers/donda 2.png' },
+        { name: 'Pablo.mp3', duration: 334, coverArt: 'covers/donda 2.png' },
+        { name: 'Can U Be.mp3', duration: 366, coverArt: 'covers/tlop.png' },
+        
+    ];
     const nightVibeSongs = [...regularSongs];
 
     let currentSongs = regularSongs;
