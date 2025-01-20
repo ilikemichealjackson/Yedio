@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const regularSongs = [
         { name: '30 Hours.mp3', duration: 323, coverArt: 'covers/tlop.png' },
-        { name: 'Believe What I Say.mp3', duration: 242, coverArt: 'covers/donda' },
+        { name: 'Believe What I Say.mp3', duration: 242, coverArt: 'covers/donda.png' },
         { name: 'I Thought About Killing You.mp3', duration: 274, coverArt: 'covers/ye.png' },
         { name: 'So Soon.mp3', duration: 147, coverArt: 'covers/y3.png' },
         { name: 'Field Trip.mp3', duration: 192, coverArt: 'covers/Vultures 2.png' },
